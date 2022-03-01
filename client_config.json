@@ -1,0 +1,103 @@
+{
+    "connection_frame" : {
+        "width" : 290,
+        "height" : 250
+    },
+    "transmission_protocol" : {
+        "normal_video" : 1,
+        "normal_audio" : 2,
+        "disconnect" : 3,
+        "clients" : 4,
+        "add_client" : 5,
+        "update_uuid" : 6,
+        "tcp_udp_socket" : 7,
+        "default" : 8,
+        "remove_client" : 9
+    },
+    "nickname_entry": {
+        "width": 140,
+        "height": 30,
+        "padding_left": 30,
+        "justify": "center",
+        "font": [
+            "Calibri", 13
+        ]
+    },
+    "connect_button": {
+        "width": 80,
+        "height": 30,
+        "text": "Connect",
+        "padding_right": 10,
+        "font": [
+            "Calibri", 12
+        ]
+    },
+    "video_frame": {
+        "width": 950,
+        "height": 640
+    },
+    "exit_button": {
+        "width": 110,
+        "height": 40,
+        "text": "Exit Meeting",
+        "justify": "center",
+        "font": [
+            "Calibri", 12
+        ]
+    },
+    "label_frame":{
+        "width": 740,
+        "height": 600,
+        "row": 0,
+        "column": 0
+    },
+    "frame_resolution":{
+        "width": 370,
+        "height": 300
+    },
+    "text_entry": {
+        "placeholder_text": "Text:"
+    },
+    "black_white_button":{
+        "width": 40,
+        "height": 40,
+        "icon": "black_white.png"
+    },
+    "blur_button":{
+        "width": 40,
+        "height": 40,
+        "icon": "blur.png"
+    },
+    "video_button":{
+        "width": 40,
+        "height": 40,
+        "icon": "enabledcamera.png"
+    },
+    "audio_button":{
+        "width": 40,
+        "height": 40,
+        "icon": "audio.png"
+    },
+    "audio_buffer": 64,
+    "audio_chunk": 1024,
+    "audio_channels": 2,
+    "audio_rate": 44100,
+    "quality": 65,
+    "format": ".jpg",
+    "blur_ksize": [9, 9],
+    "spacing": 5,
+    "fps": 60,
+    "window_close_protocol": "WM_DELETE_WINDOW",
+    "connect_message": "ciao",
+    "disconnect_message": "Bye",
+    "center_window": "tk::PlaceWindow . center",
+    "placeholder_text": "Insert nickame:",
+    "window_title": "Google Mitis Client",
+    "window_icon": "./icon.png",
+    "buffer_size" : 65536,
+    "ip" : "127.0.0.1",
+    "server_ip" : "194.233.168.152",
+    "port" : 7000,
+    "min_port": 1025,
+    "max_port": 65535
+}

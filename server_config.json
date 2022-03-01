@@ -1,0 +1,42 @@
+{
+    "server_resolution" : {
+        "width" : 280,
+        "height" : 40
+    },
+    "transmission_protocol" : {
+        "normal_video" : 1,
+        "normal_audio" : 2,
+        "disconnect" : 3,
+        "clients" : 4,
+        "add_client" : 5,
+        "update_uuid" : 6,
+        "tcp_udp_socket" : 7,
+        "default" : 8,
+        "remove_client" : 9
+    },
+    "start_button": {
+        "text" : "Start Server",
+        "width" : 19,
+        "height" : 2,
+        "column" : 0,
+        "row" : 0
+    },
+    "stop_button": {
+        "text" :"Stop Server",
+        "width" : 19,
+        "height" : 2,
+        "column" : 1,
+        "row" : 0
+    },
+    "center_window": "tk::PlaceWindow . center",
+    "server_closed_message": "Server closed",
+    "disconnect_message": "Bye from the server.",
+    "window_title": "Google Mitis Server",
+    "window_icon": "./icon.png",
+    "buffer_size" : 65536,
+    "server_ip" : "194.233.168.152",
+    "ip" : "0.0.0.0",
+    "port" : 7000,
+    "min_port": 1025,
+    "max_port": 65535
+}

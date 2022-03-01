@@ -1,0 +1,8 @@
+
+BEFORE running the program these modules must be installed in the system
+
+tkinter / python-tk with apt
+opencv-python
+munch
+pygame only Clock() object needs to be installed
+numpy
