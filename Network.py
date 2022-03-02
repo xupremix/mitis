@@ -162,7 +162,7 @@ class Server(object):
                 for client_uuid, values in self.clients.items():
                     if uuid == client_uuid:
                         continue
-                    _, client_text_sock, _, _ = values
+                    _, client_text_sock, _, _, _ = values
                     #invio messaggio ai client gia' presenti
                     client_text_sock.send(encodeMessage(self.config.transmission_protocol.default, uuid, message))
             except ConnectionResetError:
