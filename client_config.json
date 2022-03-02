@@ -95,8 +95,7 @@
     "window_title": "Google Mitis Client",
     "window_icon": "./icon.png",
     "buffer_size" : 65536,
-    "ip" : "127.0.0.1",
-    "server_ip" : "194.233.168.152",
+    "ip" : "194.233.168.152",
     "port" : 7000,
     "min_port": 1025,
     "max_port": 65535
