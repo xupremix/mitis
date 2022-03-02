@@ -21,7 +21,9 @@ def windowsInstall():
     system("pip3 install numpy")
     print("Installing pygame")
     system("pip3 install pygame")
-
+    print("Installing pyaudio")
+    system("pip3 install pyaudio")
+    
 def macInstall():
     from os import system
     print("Upgrading pip version")
@@ -36,6 +38,8 @@ def macInstall():
     system("pip3 install numpy")
     print("Installing pygame")
     system("pip3 install pygame")
+    print("Installing pyaudio")
+    system("pip3 install pyaudio")
 
 def linuxInstall():
     from os import system
@@ -51,6 +55,8 @@ def linuxInstall():
     system("pip3 install numpy")
     print("Installing pygame")
     system("sudo apt-get install python3-pygame")
+    print("Installing pyaudio")
+    system("sudo apt-get install portaudio19-dev python3-pyaudio")
 
 if __name__ == '__main__':
     main()
