@@ -23,6 +23,8 @@ def windowsInstall():
     system("pip3 install pygame")
     print("Installing pyaudio")
     system("pip3 install pyaudio")
+    print("Installing pillow")
+    system("pip3 install pillow")
     
 def macInstall():
     from os import system
@@ -40,6 +42,8 @@ def macInstall():
     system("pip3 install pygame")
     print("Installing pyaudio")
     system("pip3 install pyaudio")
+    print("Installing pillow")
+    system("pip3 install pillow")
 
 def linuxInstall():
     from os import system
@@ -57,6 +61,8 @@ def linuxInstall():
     system("sudo apt-get install python3-pygame")
     print("Installing pyaudio")
     system("sudo apt-get install portaudio19-dev python3-pyaudio")
+    print("Installing pillow")
+    system("pip3 install pillow")
 
 if __name__ == '__main__':
     main()
