@@ -9,3 +9,6 @@ libraries:
  munch
  pygame
  numpy
+
+to install library first run
+**python3 Installer.py**
