@@ -9,6 +9,7 @@ libraries:
  munch
  pygame
  numpy
+ pyaudio
 
 to install library first run
 **python3 Installer.py**

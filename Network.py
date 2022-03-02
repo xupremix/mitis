@@ -121,7 +121,7 @@ class Server(object):
             text_sock, _ = self.tcp_sock.accept()
             
             message, udp_addr = udp_sock.recvfrom(self.config.buffer_size)
-            print(decodeMessage(message)[2])
+            print(f"UDP Connection message from {udp_addr}: {decodeMessage(message)[2]}")
                         
             #aggiunta del client e delle socket al dizionario
             self.clients[client_uuid] = (connection_sock, text_sock, udp_sock, client_addr, udp_addr)
@@ -141,16 +141,20 @@ class Server(object):
         
         #gestione della disonnessione
         while True:
-            _, uuid, message = decodeMessage(connection_sock.recv(self.config.buffer_size))
-            if uuid == client_uuid:
-                print("Deleting client")
-                del self.clients[client_uuid]
-                print(f"Client: {client_uuid} disconnected: {message}")
-                connection_sock.send(encodeMessage(self.config.transmission_protocol.disconnect, uuid, self.config.disconnect_message))
-                #invio ai client gia' presenti di rimuovere un client
-                for client_uuid, values in self.clients.items():
-                    connection_sock, _, _, _, _ = values
-                    connection_sock.send(encodeMessage(self.config.transmission_protocol.remove_client, uuid, message))
+            try:
+                _, uuid, message = decodeMessage(connection_sock.recv(self.config.buffer_size))
+                if uuid == client_uuid:
+                    print("Deleting client")
+                    del self.clients[client_uuid]
+                    print(f"Client: {client_uuid} disconnected: {message}")
+                    connection_sock.send(encodeMessage(self.config.transmission_protocol.disconnect, uuid, self.config.disconnect_message))
+                    #invio ai client gia' presenti di rimuovere un client
+                    for client_uuid, values in self.clients.items():
+                        connection_sock, _, _, _, _ = values
+                        connection_sock.send(encodeMessage(self.config.transmission_protocol.remove_client, uuid, message))
+                    break
+            except:
+                print("Connection with client closed")
                 break
         print(f"Clients: {len(self.clients)}")
     
@@ -190,19 +194,25 @@ class Server(object):
 
     def normal_video(self, uuid, frame):
         #invio del frame video ai client eccetto a quello che lo ha inviato
-        for client_uuid, values in self.clients.items():
-            if uuid == client_uuid:
-                continue
-            _, _, udp_sock, _, addr = values
-            udp_sock.sendto(encodeMessage(self.config.transmission_protocol.normal_video, uuid, frame), addr)
+        try:
+            for client_uuid, values in self.clients.items():
+                if uuid == client_uuid:
+                    continue
+                _, _, udp_sock, _, addr = values
+                udp_sock.sendto(encodeMessage(self.config.transmission_protocol.normal_video, uuid, frame), addr)
+        except:
+            print("Tried to send video frame with connection closed")
                 
     def normal_audio(self, uuid, frame):
         #invio del frame audio ai client eccetto a quello che lo ha inviato
-        for client_uuid, values in self.clients.items():
-            if uuid == client_uuid:
-                continue
-            _, _, udp_sock, _, addr = values
-            udp_sock.sendto(encodeMessage(self.config.transmission_protocol.normal_audio, uuid, frame), addr)
+        try:
+            for client_uuid, values in self.clients.items():
+                if uuid == client_uuid:
+                    continue
+                _, _, udp_sock, _, addr = values
+                udp_sock.sendto(encodeMessage(self.config.transmission_protocol.normal_audio, uuid, frame), addr)
+        except:
+            print("Tried to send audio frame with connection closed")
 
 #classe client
 class Client(object):
@@ -284,6 +294,8 @@ class Client(object):
             self.clients = []
             #svuoto la lista delle videocamere
             self.cameras = {}
+            #ritorno alla posizione iniziale
+            self.position = 1
             #reset dei filtri
             self.blur = False
             self.black_white = False
@@ -310,6 +322,8 @@ class Client(object):
             self.clients = []
             #svuoto la lista delle videocamere
             self.cameras = {}
+            #ritorno alla posizione iniziale
+            self.position = 1
             self.hasStarted = False
             #reset dei filtri
             self.blur = False
@@ -352,8 +366,8 @@ class Client(object):
         self.other_audio_frames = []
         
         #creazione stream per l'audio
-        audio = pyaudio.PyAudio()
-        self.stream = audio.open(
+        self.PyAudio = pyaudio.PyAudio()
+        self.stream = self.PyAudio.open(
             format = pyaudio.paInt16,
             channels = self.config.audio_channels,
             rate = self.config.audio_rate,
@@ -373,12 +387,20 @@ class Client(object):
     def play_audio(self):
         while True:
             if len(self.other_audio_frames) == self.config.audio_buffer:
-                while True:
+                while self.other_audio_frames:
                     try:
                         self.stream.write(self.other_audio_frames.pop(0), self.config.audio_chunk)
                     except:
                         print("Could not write to audio stream")
-                        break
+                        self.stream.close()
+                        self.stream = self.PyAudio.open(
+                            format = pyaudio.paInt16,
+                            channels = self.config.audio_channels,
+                            rate = self.config.audio_rate,
+                            frames_per_buffer=self.config.audio_chunk,
+                            input = True,
+                            output = True
+                        )
     
     #invio audio al server
     def send_audio(self, udp_port):
@@ -388,7 +410,6 @@ class Client(object):
                     self.udp_sock.sendto(encodeMessage(self.config.transmission_protocol.normal_audio, self.uuid, self.my_audio_frames.pop(0)), (self.config.ip, udp_port))
                 except:
                     print("Could not send audio")
-                    break
     
     #registrazione audio e aggiunta ai frame da inviare al server
     def record_audio(self):
@@ -397,8 +418,16 @@ class Client(object):
                 try:
                     self.my_audio_frames.append(self.stream.read(self.config.audio_chunk))
                 except:
-                    print("Could not send audio frame")
-                    break
+                    print("Could not read audio frame")
+                    self.stream.close()
+                    self.stream = self.PyAudio.open(
+                        format = pyaudio.paInt16,
+                        channels = self.config.audio_channels,
+                        rate = self.config.audio_rate,
+                        frames_per_buffer=self.config.audio_chunk,
+                        input = True,
+                        output = True
+                    )
                 
     #funzione che gestisce i frame udp in arrivo dal server
     def recvframeHandler(self):
@@ -407,17 +436,18 @@ class Client(object):
             if len(self.cameras) > 1:
                 try:
                     message, _ = self.udp_sock.recvfrom(self.config.buffer_size)
+                    protocol, uuid, frame = decodeMessage(message)
+                    #nel caso di frame audio lo giro alla funzione apposita
+                    if protocol == self.config.transmission_protocol.normal_audio:
+                        self.other_audio_frames.append(frame)
+                        continue
+                    
+                    #nel caso di frame immagine aggiorno la videocamera corrispondente
+                    frame = cv2.imdecode(frame, 1)
+                    updateLabelImage(self.cameras[uuid], frame)
                 except:
-                    break
-                protocol, uuid, frame = decodeMessage(message)
-                #nel caso di frame audio lo giro alla funzione apposita
-                if protocol == self.config.transmission_protocol.normal_audio:
-                    self.other_audio_frames.append(frame)
+                    print("Error while receiving and updating a frame")
                     continue
-                
-                #nel caso di frame immagine aggiorno la videocamera corrispondente
-                frame = cv2.imdecode(frame, 1)
-                updateLabelImage(self.cameras[uuid], frame)
     
     def connectionHandler(self):
         while True:
@@ -470,6 +500,7 @@ class Client(object):
         del self.cameras[client_uuid]
         print(f"Client deleted successfully")
         self.client_disconnected = True
+        self.position -= 1
             
     def udp_thread(self, udp_port):
         print("Hello from udp_thread")
