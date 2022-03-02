@@ -1,15 +1,14 @@
 # GoogleMitis
 
-BEFORE running the program these modules must be installed in the system
+BEFORE running the program these modules must be installed in your system
 
 libraries:
  tkinter
  opencv
- socket / threading
  munch
  pygame
  numpy
  pyaudio
 
-to install library first run
+to install libraries first run
 **python3 Installer.py**
