@@ -1,4 +1,4 @@
-# GoogleMitis
+# Mitis
 
 BEFORE running the program these modules must be installed in the system
 
