@@ -92,7 +92,7 @@
     "disconnect_message": "Bye",
     "center_window": "tk::PlaceWindow . center",
     "placeholder_text": "Insert nickame:",
-    "window_title": "Google Mitis Client",
+    "window_title": "Mitis Client",
     "window_icon": "./icon.png",
     "buffer_size" : 65536,
     "ip" : "194.233.168.152",
