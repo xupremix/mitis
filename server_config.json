@@ -31,7 +31,7 @@
     "center_window": "tk::PlaceWindow . center",
     "server_closed_message": "Server closed",
     "disconnect_message": "Bye from the server.",
-    "window_title": "Google Mitis Server",
+    "window_title": "Mitis Server",
     "window_icon": "./icon.png",
     "buffer_size" : 65536,
     "server_ip" : "194.233.168.152",
