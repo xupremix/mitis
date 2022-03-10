@@ -95,7 +95,7 @@
     "window_title": "Mitis Client",
     "window_icon": "./icon.png",
     "buffer_size" : 65536,
-    "ip" : "194.233.168.152",
+    "ip" : "127.0.0.1",
     "port" : 7000,
     "min_port": 1025,
     "max_port": 65535
