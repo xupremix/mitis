@@ -575,6 +575,12 @@ class Client(object):
             else:
                 #ridimensionamento webcam per far stare gli altri client
                 frame = cv2.resize(frame, (self.config.frame_resolution.width, self.config.frame_resolution.height))
+                if not self.uuid in self.cameras.keys():
+                    self.cameras[self.uuid] = createLabel(
+                        frame=self.graphics.label_frame,
+                        width=self.config.label_frame.width,
+                        height=self.config.label_frame.height
+                    )
                 updateLabelImage(self.cameras[self.uuid], frame)
                 updateLabelPosition(
                     self.cameras[self.uuid],
