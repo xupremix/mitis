@@ -177,13 +177,13 @@ class Server(object):
         print("Udp handler has started")
         while True:
             #ricevo frame udp
+            options = {
+                self.config.transmission_protocol.normal_video: lambda: self.normal_video(uuid, frame),
+                self.config.transmission_protocol.normal_audio: lambda: self.normal_audio(uuid, frame)
+            }
             try:
                 message, _ = udp_sock.recvfrom(self.config.buffer_size)
                 protocol, uuid, frame = decodeMessage(message)
-                options = {
-                    self.config.transmission_protocol.normal_video: lambda: self.normal_video(uuid, frame),
-                    self.config.transmission_protocol.normal_audio: lambda: self.normal_audio(uuid, frame)
-                }
                 if protocol == self.config.transmission_protocol.disconnect:
                     break
                 #in base al protocollo esegue la funzione associata con i parametri indicati (una lambda ritorna la funzione che verra' poi chiamata)
@@ -450,15 +450,15 @@ class Client(object):
                     continue
     
     def connectionHandler(self):
+        options = {
+            self.config.transmission_protocol.add_client : lambda: self.add_client(uuid),
+            self.config.transmission_protocol.remove_client : lambda: self.remove_client(uuid)
+        }
         while True:
             try:
                 print("Waiting for connection message")
                 #aggiunta / rimozione client dallo schermo 
                 protocol, uuid, message = decodeMessage(self.sock.recv(self.config.buffer_size))
-                options = {
-                    self.config.transmission_protocol.add_client : lambda: self.add_client(uuid),
-                    self.config.transmission_protocol.remove_client : lambda: self.remove_client(uuid)
-                }
                 #nel caso di disconnessione invio un messaggio di conferma a terminale
                 if protocol == self.config.transmission_protocol.disconnect:
                     print(f"Connection closed, {message}")
